@@ -27,10 +27,32 @@ Be aware, though, that your .Renviron file might get erased when you update your
 
 ## Requesting Data for your Organization
 
-xxx
+Requesting data for all publications by authors from your organization is done with the orgPubCount() and orgMetrics() functions. Both functions are tied to your organization ID in WOS by your API key, so you can't currently change what organization you request these metrics for. Both functions are tied to a specific start year, and will return indicators for publications by authors at your organization starting from the year you specify. To use them, load the .r file 
+
+    source("./incites_api.r")
+    
+and then use the orgPubCount() function to see how many publications are available for you to request. So to see how many publications are available for your organization from 2019-present, run 
+
+    orgPubCount("2019")
+    
+If you want to actually download the indicators for that entire set of publications, you can run 
+
+    pubs <- orgMetrics("2019", outfile = "org_metrics.txt")
+    
+or to just download the first 200 publications, you can set the 'retMax' argument to 200
+
+    pubs <- orgMetrics("2019", retMax = 200, outfile = "org_metrics.txt")
+    
+Two other arguments to the orgMetrics() function to be aware of are 'schema' and 'esci'. The 'schema' argument allows you to change the subject category schema from the default Web of Science categories (value = 'wos') to a different schema like the new citation topics schema (value = 'ct'). A full list of the available schema and their input values is available from the Developer Portal. The 'esci' argument allows you to decide whether or not to include citations from the Emerging Sources Citation Index in the returned metrics. The function defaults to "y" to include them, but to exclude these citations, set the argument to "n". 
 
 ## Requesting Data for a Set of UTs
 
-xxx
+Requesting data for a known set of publications by their WOS accession number, or UT number, is done with the searchByUT() function. The main argument to the function is a vector of UT numbers for the set of publications you want indicators for. The 'schema' and 'esci' arguments from the orgMetrics() function are also available here. So to request InCites indicators for a set of UT numbers named 'myIDs', simply run 
+
+    pubs <- searchByUT(myIDs, outfile = "pub_metrics.txt")
+    
+Or to request the indicators for these publications using the Citation Topics schema, run 
+
+    pubs <- searchByUT(myIDs, schema = "ct", outfile = "pub_metrics.txt")
 
 ## Working with the Results
