@@ -25,6 +25,12 @@ replacing the [yourkey] text with your API key. You should then get a message sa
     
 Be aware, though, that your .Renviron file might get erased when you update your version of R, so make sure you have your key available somewhere else. And if, after you update R and try to run other functions in this package, you get an error message saying that the "INCITES_API_KEY" variable does not exist, run the setInCitesKey() function again to store it, restart R, and then you should be fine. 
 
-## Requesting Data
+## Requesting Data for your Organization
 
 xxx
+
+## Requesting Data for a Set of UTs
+
+xxx
+
+## Working with the Results
