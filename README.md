@@ -56,3 +56,25 @@ Or to request the indicators for these publications using the Citation Topics sc
     pubs <- searchByUT(myIDs, schema = "ct", outfile = "pub_metrics.txt")
 
 ## Working with the Results
+
+Both the orgMetrics() and searchByUT() functions will loop through the results to download all of the available publications (or until the retMax is reached in the orgMetrics() function), save the resulting JSON to the file specified in the 'outfile' argument, and then parse the resulting JSON to a usable format in R. 
+
+The structure of the results will vary depending on the 'schema' requested. For subject category schema in which publications can only belong to a single subject category, like the Essential Science Indicators schema, the results will be a single data frame containing all the results. For schema in which publications can belong to multiple subject categories, the API returns all of the percentile values for all of the subject categories that each publication belongs to, so the results will be a list of two data frames. The first data frame (pubs$pubData) contains the non-percentile indicators for the requested publications and the second (pubs$percentileData) contains the percentile rank information.
+
+This structure allows you flexibility in how you would like to combine the percentile rank data for multi-category publications. Following the recommendations in the bibliometrics literature, you could take the mean of the assigned categories by doing something like 
+
+    mPerc <- sapply(split(pubs$percentileData$CAT_PERC, pubs$percentileData$ACCESSION_NUMBER), mean, na.rm = TRUE)
+    mPerc <- data.frame(ACCESSION_NUMBER = names(mPerc), mean_percentile = mPerc)
+    finPubs <- merge(pubs$pubData, mPerc, by = "ACCESSION_NUMBER")
+
+Or, following the current InCites web interface, you could chose the percentile rank for the category in which the article scores best 
+
+    mPerc <- pubs$percentileData[pubs$percentileData$IS_BEST == "true",]
+    finPubs <- merge(pubs$pubData, mPerc, by = "ACCESSION_NUMBER")
+    
+For the Citation Topics schema, the API returns indicators at all three levels of aggregation (micro, meso, and macro), so you can choose which level of aggregation you wish to see the indicators for. So to chose indicators at the meso level, you could do
+
+    mPerc <- pubs$percentileData[pubs$percentileData$LEVEL == "2",]
+    finPubs <- merge(pubs$pubData, mPerc, by = "ACCESSION_NUMBER")
+    
+In any of these cases, the finPubs data frame contains all of the InCites indicators returned for the requested publications in a flat format, which you can analyze or save as you would any other data frame in R.
