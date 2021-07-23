@@ -128,10 +128,8 @@ orgMetrics <- function(startYear, ver = 2, schema = "wos", esci = "y", numrecs =
 	theData$ACCESSION_NUMBER <- paste0("WOS:", theData$ACCESSION_NUMBER)
 	theData$oatype[theData$oatype == ""] <- NA
 	}
-	print("Done")
-	return(theData)
 	}
-	print("Done.")
+	print("Done")
 	return(theData)
 }
 
